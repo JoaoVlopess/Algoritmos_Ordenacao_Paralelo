@@ -20,7 +20,7 @@ public class MergeSort {
         merge(array, left, right);
     }
 
-    private static void merge(int[] array, int[] left, int[] right) {
+    public static void merge(int[] array, int[] left, int[] right) {
         int i = 0, j = 0, k = 0;
         while (i < left.length && j < right.length) {
             if (left[i] <= right[j]) {
@@ -38,14 +38,4 @@ public class MergeSort {
         
     }
 
-    public static void main(String[] args) {
-        int[] array = {38, 27, 43, 3, 9, 82, 10};
-        long start = System.nanoTime();
-        mergeSort(array);
-        long end = System.nanoTime();
-        System.out.println("Execution time: " + (end - start) + " ns");
-        for (int num : array) {
-            System.out.print(num + " ");
-        }
-    }
 }
