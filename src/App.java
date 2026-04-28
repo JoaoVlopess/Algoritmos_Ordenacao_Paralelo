@@ -1,12 +1,16 @@
+import Paralelo.InsertionSortParalelo;
 import Paralelo.MergeSortParalelo;
+import Paralelo.SelectionSortParalelo;
+import Sequencial.InsertionSort;
 import Sequencial.MergeSort;
+import Sequencial.SelectionSort;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
 
 public class App {
     public static void main(String[] args) {
-        int tamanho = 1_000_000;
+        int tamanho = 100_000;
         int[] original = gerarArray(tamanho);
         int numAmostras = 5;
 
@@ -26,7 +30,7 @@ public class App {
         System.out.println("Aquecimento concluído!\n");
 
         //TESTE SEQUENCIAL (COM 5 AMOSTRAS)
-        System.out.println("Testando modo Sequencial:");
+        System.out.println("Testando modo Sequencial (Merge Sort):");
         double somaSeq = 0;
         for (int i = 1; i <= numAmostras; i++) {
             int[] copiaSeq = Arrays.copyOf(original, original.length);
@@ -47,7 +51,7 @@ public class App {
 
         for (int qtd : quantidadesThreads) {
             double somaPar = 0;
-            System.out.println("Testando com " + qtd + " threads:");
+            System.out.println("Testando com " + qtd + " threads (Merge Sort):");
             
             for (int i = 1; i <= numAmostras; i++) {
                 int[] copiaPar = Arrays.copyOf(original, original.length);
@@ -67,6 +71,94 @@ public class App {
             double mediaPar = somaPar / numAmostras;
             double speedup = mediaSeq / mediaPar;
             System.out.printf(">> MÉDIA PARA %d THREADS: %.2f ms (Speedup: %.2fx)%n%n", qtd, mediaPar, speedup);
+        }
+
+        // ==========================================
+        // ADIÇÃO DOS TESTES: INSERTION SORT
+        // ==========================================
+        System.out.println("------------------------------------------");
+        System.out.println("Testando modo Sequencial (Insertion Sort):");
+        double somaSeqIns = 0;
+        for (int i = 1; i <= numAmostras; i++) {
+            int[] copiaSeq = Arrays.copyOf(original, original.length);
+            
+            long inicio = System.nanoTime();
+            InsertionSort.sort(copiaSeq);
+            long fim = System.nanoTime();
+            
+            double tempo = (fim - inicio) / 1_000_000.0;
+            somaSeqIns += tempo;
+            System.out.printf("  Amostra %d: %.2f ms%n", i, tempo);
+        }
+        double mediaSeqIns = somaSeqIns / numAmostras;
+        System.out.printf(">> MÉDIA SEQUENCIAL INSERTION SORT: %.2f ms%n%n", mediaSeqIns);
+
+        for (int qtd : quantidadesThreads) {
+            double somaParIns = 0;
+            System.out.println("Testando Insertion Sort Paralelo com " + qtd + " threads:");
+            
+            for (int i = 1; i <= numAmostras; i++) {
+                int[] copiaPar = Arrays.copyOf(original, original.length);
+                ForkJoinPool pool = new ForkJoinPool(qtd);
+                InsertionSortParalelo tarefa = new InsertionSortParalelo(copiaPar);
+                
+                long inicio = System.nanoTime();
+                pool.invoke(tarefa);
+                long fim = System.nanoTime();
+                pool.shutdown();
+                
+                double tempo = (fim - inicio) / 1_000_000.0;
+                somaParIns += tempo;
+                System.out.printf("  Amostra %d: %.2f ms%n", i, tempo);
+            }
+            
+            double mediaParIns = somaParIns / numAmostras;
+            double speedupIns = mediaSeqIns / mediaParIns;
+            System.out.printf(">> MÉDIA PARA %d THREADS (Insertion Sort): %.2f ms (Speedup: %.2fx)%n%n", qtd, mediaParIns, speedupIns);
+        }
+
+        // ==========================================
+        // ADIÇÃO DOS TESTES: SELECTION SORT
+        // ==========================================
+        System.out.println("------------------------------------------");
+        System.out.println("Testando modo Sequencial (Selection Sort):");
+        double somaSeqSel = 0;
+        for (int i = 1; i <= numAmostras; i++) {
+            int[] copiaSeq = Arrays.copyOf(original, original.length);
+            
+            long inicio = System.nanoTime();
+            SelectionSort.sort(copiaSeq);
+            long fim = System.nanoTime();
+            
+            double tempo = (fim - inicio) / 1_000_000.0;
+            somaSeqSel += tempo;
+            System.out.printf("  Amostra %d: %.2f ms%n", i, tempo);
+        }
+        double mediaSeqSel = somaSeqSel / numAmostras;
+        System.out.printf(">> MÉDIA SEQUENCIAL SELECTION SORT: %.2f ms%n%n", mediaSeqSel);
+
+        for (int qtd : quantidadesThreads) {
+            double somaParSel = 0;
+            System.out.println("Testando Selection Sort Paralelo com " + qtd + " threads:");
+            
+            for (int i = 1; i <= numAmostras; i++) {
+                int[] copiaPar = Arrays.copyOf(original, original.length);
+                ForkJoinPool pool = new ForkJoinPool(qtd);
+                SelectionSortParalelo tarefa = new SelectionSortParalelo(copiaPar);
+                
+                long inicio = System.nanoTime();
+                pool.invoke(tarefa);
+                long fim = System.nanoTime();
+                pool.shutdown();
+                
+                double tempo = (fim - inicio) / 1_000_000.0;
+                somaParSel += tempo;
+                System.out.printf("  Amostra %d: %.2f ms%n", i, tempo);
+            }
+            
+            double mediaParSel = somaParSel / numAmostras;
+            double speedupSel = mediaSeqSel / mediaParSel;
+            System.out.printf(">> MÉDIA PARA %d THREADS (Selection Sort): %.2f ms (Speedup: %.2fx)%n%n", qtd, mediaParSel, speedupSel);
         }
 
         System.out.println("------------------------------------------");
