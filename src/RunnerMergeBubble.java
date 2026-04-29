@@ -1,14 +1,12 @@
 import Paralelo.MergeSortParalelo;
-import Paralelo.BubbleSortParalelo;
 import Sequencial.MergeSort;
-import Sequencial.BubbleSort;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
-import java.util.ArrayList;
-import java.util.List;
-import java.io.PrintWriter;
-import java.io.File;
 
 public class RunnerMergeBubble {
 
@@ -72,11 +70,13 @@ public class RunnerMergeBubble {
             logGlobal.add(new Resultado("BubbleSort", qtd, mediaObtida, speedup, eficiencia));
         }
 
-        System.out.println("\n=== BENCHMARK FINALIZADO COM SUCESSO ===");
 
 
         salvarArquivoCSV(logGlobal);
 
+        chamarPythonParaGraficos();
+
+        System.out.println("\n=== BENCHMARK FINALIZADO COM SUCESSO ===");
     }
 
     // --- MÉTODOS AUXILIARES PARA ORGANIZAÇÃO ---
@@ -183,4 +183,18 @@ public class RunnerMergeBubble {
         for (int i = 0; i < n; i++) a[i] = r.nextInt(1000000);
         return a;
     }
+
+    private static void chamarPythonParaGraficos() {
+    System.out.println("\nTentando gerar gráficos via Python...");
+    try {
+        // Comando para rodar o script (pode ser python ou python3 dependendo do SO)
+        ProcessBuilder pb = new ProcessBuilder("python3", "gerar_graficos.py");
+        // Isso faz com que as mensagens do Python apareçam no console do Java
+        pb.inheritIO(); 
+        Process p = pb.start();
+        p.waitFor(); // Espera o Python terminar para seguir
+    } catch (Exception e) {
+        System.out.println("Erro ao chamar Python. Certifique-se de que o python3 e pandas/matplotlib estão instalados.");
+    }
+}
 }
