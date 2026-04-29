@@ -1,4 +1,6 @@
 package Sequencial;
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.ForkJoinPool;
 
 public class BubbleSort {
     public int[] array;
