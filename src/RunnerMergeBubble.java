@@ -188,7 +188,7 @@ public class RunnerMergeBubble {
     System.out.println("\nTentando gerar gráficos via Python...");
     try {
         // Comando para rodar o script (pode ser python ou python3 dependendo do SO)
-        ProcessBuilder pb = new ProcessBuilder("python3", "gerar_graficos.py");
+        ProcessBuilder pb = new ProcessBuilder("python", "gerar_graficos.py");
         // Isso faz com que as mensagens do Python apareçam no console do Java
         pb.inheritIO(); 
         Process p = pb.start();

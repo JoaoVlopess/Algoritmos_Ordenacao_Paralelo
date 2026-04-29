@@ -1,0 +1,29 @@
+# --- Java ---
+# Ignora todos os arquivos compilados
+*.class
+
+# Ignora a pasta bin do VS Code (onde ele joga os .class automaticamente)
+bin/
+
+# --- Python ---
+# Ignora pastas de cache do Python e ambientes virtuais
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# --- IDEs ---
+# Ignora configurações do VS Code
+.vscode/
+
+# --- Resultados do Benchmark ---
+# Se você quiser que o CSV e os Gráficos NÃO subam para o GitHub,
+# mantenha as linhas abaixo. Caso queira que eles subam, coloque um # na frente.
+benchmarks.csv
+resultados/
+
+# --- Sistema Operacional ---
+.DS_Store
+Thumbs.db
