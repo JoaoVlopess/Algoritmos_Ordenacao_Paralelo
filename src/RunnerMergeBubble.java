@@ -1,6 +1,7 @@
 import Paralelo.MergeSortParalelo;
 import Sequencial.MergeSort;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,17 +82,23 @@ public class RunnerMergeBubble {
 
     // --- MÉTODOS AUXILIARES PARA ORGANIZAÇÃO ---
 
-            private static void salvarArquivoCSV(List<Resultado> lista) {
-        try (PrintWriter writer = new PrintWriter(new File("benchmarks.csv"))) {
+private static void salvarArquivoCSV(List<Resultado> lista) {
+    File arquivo = new File("benchmarks.csv");
+    boolean existe = arquivo.exists();
+
+    // FileWriter(arquivo, true) -> O 'true' ativa o modo APPEND (anexar)
+    try (PrintWriter writer = new PrintWriter(new FileWriter(arquivo, true))) {
+        // Só escreve o cabeçalho se o arquivo for novo
+        if (!existe) {
             writer.println("Algoritmo;Threads;TempoMS;Speedup;Eficiencia");
-            for (Resultado r : lista) {
-                writer.println(r.toCSV());
-            }
-            System.out.println("\n>>> Arquivo 'benchmarks.csv' gerado com sucesso!");
-        } catch (Exception e) {
-            System.err.println("Erro ao salvar CSV: " + e.getMessage());
         }
+        for (Resultado r : lista) {
+            writer.println(r.toCSV());
+        }
+    } catch (Exception e) {
+        System.err.println("Erro ao salvar CSV: " + e.getMessage());
     }
+}
     
     private static double rodarSequencialMerge(int[] original, int amostras) {
         double soma = 0;
@@ -173,7 +180,7 @@ public class RunnerMergeBubble {
         System.out.printf(">> MÉDIA %d THREADS: %.2f ms (Speedup: %.2fx) | Eficiência: %.2f%%%n%n", 
                 threads, media, speedup, eficiencia);
             
-        // A MÁGICA ESTÁ AQUI: retornamos a média para quem chamou o método
+      
         return media;
         }
 
